@@ -12,6 +12,8 @@ class UpdateNoteEvent extends NoteEvent {
 }
 
 class DeleteNoteEvent extends NoteEvent {
-  DeleteNoteEvent({required int deleteID});
+  String deleteID;
+
+  DeleteNoteEvent({required this.deleteID});
 }
 class GetInitialNotesEvent extends NoteEvent{}

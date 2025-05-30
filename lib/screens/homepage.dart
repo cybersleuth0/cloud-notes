@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:notes_firebase_app/Bloc/notes_bloc.dart';
 import 'package:notes_firebase_app/Bloc/notes_event.dart';
+import 'package:notes_firebase_app/Constants/appConstants.dart';
 import 'package:notes_firebase_app/Model/Models.dart';
 
 import '../Bloc/notes_state.dart';
@@ -53,7 +54,6 @@ class _HomepageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("called");
     return Scaffold(
       backgroundColor: Color(0xff252525),
       appBar: AppBar(
@@ -132,6 +132,10 @@ class _HomepageState extends State<HomePage> {
                   );
                   return InkWell(
                     onTap: () {
+                      Navigator.pushNamed(
+                          contex, App_Routes.ROUTE_DETAILSPAGE, arguments: {
+                        "note": state.notes[index]
+                      });
                       // Navigator.pushNamed(
                       //   context,
                       //   "/detailspage",
@@ -394,29 +398,6 @@ class _HomepageState extends State<HomePage> {
                                 onPressed: () async {
                                   if (titleController.text.isNotEmpty &&
                                       descController.text.isNotEmpty) {
-                                    // await collRef!
-                                    //     .add(
-                                    //       NoteModel(
-                                    //         title: titleController.text,
-                                    //         desc: descController.text,
-                                    //         createdAT: DateTime.now()
-                                    //             .millisecondsSinceEpoch
-                                    //             .toString(),
-                                    //       ).toMap(),
-                                    //     )
-                                    //     .then((value) {
-                                    //       titleController.clear();
-                                    //       descController.clear();
-                                    //       ScaffoldMessenger.of(
-                                    //         context,
-                                    //       ).showSnackBar(
-                                    //         const SnackBar(
-                                    //           content: Text(
-                                    //             "Note Added Successfully!",
-                                    //           ),
-                                    //         ),
-                                    //       );
-                                    //     });
                                     context.read<NoteBloc>().add(
                                       AddNoteEvent(
                                         noteModel: NoteModel(

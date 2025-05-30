@@ -1,5 +1,5 @@
 class NoteModel {
-  int? id;
+  String? id;
   String title;
   String desc;
   String createdAT;
@@ -11,9 +11,9 @@ class NoteModel {
     this.id,
   });
 
-  factory NoteModel.fromMap(Map<String, dynamic> map) {
+  factory NoteModel.fromMap(Map<String, dynamic> map,{String? id}) {
     return NoteModel(
-      id: map['id'],
+      id: id,
       title: map['title'],
       desc: map['desc'],
       createdAT: map['createdAT'],

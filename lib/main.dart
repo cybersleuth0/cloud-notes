@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_firebase_app/Bloc/notes_bloc.dart';
 import 'package:notes_firebase_app/firebase_options.dart';
-import 'package:notes_firebase_app/screens/homepage.dart';
+
+import 'Constants/appConstants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +12,9 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [BlocProvider(create: (context) => NoteBloc())],
-      child: MaterialApp(home: HomePage(), debugShowCheckedModeBanner: false),
+      child: MaterialApp(initialRoute: App_Routes.ROUTE_HOMEPAGE,
+          routes: App_Routes.getRoutes(),
+          debugShowCheckedModeBanner: false),
     ),
   );
 }

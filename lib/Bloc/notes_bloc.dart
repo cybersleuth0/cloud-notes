@@ -6,47 +6,46 @@ import 'package:notes_firebase_app/Model/Models.dart';
 import 'notes_event.dart';
 
 class NoteBloc extends Bloc<NoteEvent, NoteState> {
-  FirebaseFirestore? firebaseFirestore;
-  CollectionReference? collRef;
+  /// This variable represents a reference to the "notes" collection in Firebase Firestore.
+  /// It is used to interact with the Firestore database for operations like adding and retrieving notes.
+  CollectionReference? notesCollection = FirebaseFirestore.instance.collection(
+      "notes");
 
   NoteBloc() : super(NoteInitialState()) {
     on<AddNoteEvent>((event, emit) async {
-      firebaseFirestore = FirebaseFirestore.instance;
-      collRef = firebaseFirestore!.collection("notes");
-      var res = await collRef!.add(
-        NoteModel(
-          title: event.noteModel.title,
-          desc: event.noteModel.desc,
-          createdAT: event.noteModel.createdAT,
-        ).toMap(),
+      var res = await notesCollection!.add(
+          event.noteModel.toMap()
       );
       if (res.id.isNotEmpty) {
-        QuerySnapshot mData = await collRef!.get();
-        List<NoteModel> allNotes = [];
+        QuerySnapshot mData = await notesCollection!.get();
 
-        for (QueryDocumentSnapshot eachnote
-            in mData.docs) {
-          allNotes.add(NoteModel.fromMap(eachnote.data() as Map<String, dynamic>));
-        }
+        List<NoteModel> allNotes = mData.docs.map((eachNote) {
+          return NoteModel.fromMap(
+              eachNote.data() as Map<String, dynamic>, // Document data
+              id: eachNote.id); // Firestore document ID
+        }).toList();
+
         emit(NoteSuccessState(notes: allNotes));
       } else {
-        emit(NoteFailureState(errorMessage: "Something went wrong"));
+        emit(NoteFailureState(errorMessage: "Note not added"));
       }
     });
 
     //get notes for when app starting
     on<GetInitialNotesEvent>((event, emit) async {
-      firebaseFirestore = FirebaseFirestore.instance;
-      collRef = firebaseFirestore!.collection("notes");
+      QuerySnapshot mData = await notesCollection!.get();
 
-      QuerySnapshot mData = await collRef!.get();
-      List<NoteModel> allNotes = [];
+      List<NoteModel> allNotes = mData.docs.map((eachnote) {
+        return NoteModel.fromMap(
+            eachnote.data() as Map<String, dynamic>,
+            id: eachnote.id);
+      }).toList();
 
-      for (QueryDocumentSnapshot eachnote
-          in mData.docs) {
-        allNotes.add(NoteModel.fromMap(eachnote.data() as Map<String, dynamic>));
-      }
       emit(NoteSuccessState(notes: allNotes));
+    });
+
+    on<DeleteNoteEvent>((event, emit) {
+      print("delete event called ${event.deleteID}");
     });
   }
 }
