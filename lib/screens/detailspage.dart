@@ -27,7 +27,7 @@ class _DetailspageState extends State<Detailspage> {
     var olddesc = note.desc;
     descController.text = note.desc;
     titleController.text = note.title;
-    var formatedDate = DateTime.fromMicrosecondsSinceEpoch(
+    var formatedDate = DateTime.fromMillisecondsSinceEpoch(
       int.parse(note.createdAT),
     );
     return Scaffold(
@@ -111,6 +111,7 @@ class _DetailspageState extends State<Detailspage> {
                                     context.read<NoteBloc>().add(
                                       DeleteNoteEvent(deleteID: note.id!),
                                     );
+                                    Navigator.pop(context);
                                     Navigator.pop(context);
                                   },
                                   style: TextButton.styleFrom(
@@ -254,8 +255,18 @@ class _DetailspageState extends State<Detailspage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Implement save functionality here
-          // updateNote();
+          if (oldtitle != titleController.text ||
+              olddesc != descController.text) {
+            context.read<NoteBloc>().add(UpdateNoteEvent(noteModel: NoteModel(
+                title: titleController.text.trim(),
+                desc: descController.text.trim(),
+                createdAT: DateTime
+                    .now()
+                    .millisecondsSinceEpoch
+                    .toString(),
+                id: note.id!
+            )));
+          }
           Navigator.pop(context);
         },
         label: Text("Save Note", style: TextStyle(fontSize: 16)),

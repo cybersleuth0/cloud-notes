@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomepageState extends State<HomePage> {
   final List<Map<String, dynamic>> _colorsAndbordercolor = [
     {
-      //"backcolor": Color(0xfff8a44c),
       "backcolor": Color(0xffffab91),
     },
     {"backcolor": Color(0xffffcc80)},
@@ -32,15 +30,10 @@ class _HomepageState extends State<HomePage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
-  // FirebaseFirestore? firebaseFirestore;
-  // CollectionReference? collRef;
-
   @override
   void initState() {
     super.initState();
     context.read<NoteBloc>().add(GetInitialNotesEvent());
-    // firebaseFirestore = FirebaseFirestore.instance;
-    // collRef = firebaseFirestore!.collection("notes");
   }
 
   @override
@@ -54,6 +47,7 @@ class _HomepageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("object");
     return Scaffold(
       backgroundColor: Color(0xff252525),
       appBar: AppBar(
@@ -79,22 +73,6 @@ class _HomepageState extends State<HomePage> {
                 ),
               ),
             ),
-            // Container(
-            //   padding: const EdgeInsets.all(10),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey.shade800.withOpacity(0.7),
-            //     borderRadius: BorderRadius.circular(15),
-            //     boxShadow: [
-            //       BoxShadow(
-            //         color: Colors.black.withOpacity(0.3),
-            //         spreadRadius: 1,
-            //         blurRadius: 5,
-            //         offset: const Offset(0, 3),
-            //       ),
-            //     ],
-            //   ),
-            //   child: const Icon(Icons.search, size: 28, color: Colors.white),
-            // ),
           ],
         ),
         flexibleSpace: Container(
@@ -109,7 +87,22 @@ class _HomepageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: BlocBuilder<NoteBloc, NoteState>(
+        child: BlocConsumer<NoteBloc, NoteState>(
+          listener: (context, state) {
+            if (state is NoteFailureState) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            }
+            if (state is NoteSuccessState) {
+              if (state.snackBarMsg != null && state.snackBarMsg!.isNotEmpty) {
+                ScaffoldMessenger
+                    .of(context)
+                    .showSnackBar(
+                    SnackBar(content: Text(state.snackBarMsg.toString())));
+              }
+            }
+          },
           builder: (context, state) {
             if (state is NoteLoadingState) {
               return Center(child: CircularProgressIndicator());
@@ -118,7 +111,7 @@ class _HomepageState extends State<HomePage> {
               return Center(child: Text(state.errorMessage));
             }
             if (state is NoteSuccessState) {
-              return GridView.builder(
+              return state.notes.isNotEmpty ? GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
@@ -136,17 +129,6 @@ class _HomepageState extends State<HomePage> {
                           contex, App_Routes.ROUTE_DETAILSPAGE, arguments: {
                         "note": state.notes[index]
                       });
-                      // Navigator.pushNamed(
-                      //   context,
-                      //   "/detailspage",
-                      //   arguments: {
-                      //     "title": allnotes[index].nTitle,
-                      //     "desc": allnotes[index].nDesc,
-                      //     "id": allnotes[index].nId,
-                      //     "date": allnotes[index].nCreatedat,
-                      //   },
-                      // );
-                      // setState(() {});
                     },
                     child: Container(
                       padding: const EdgeInsets.all(15),
@@ -217,20 +199,19 @@ class _HomepageState extends State<HomePage> {
                     ),
                   );
                 },
-              );
+              ) : Center(
+                  child: Text(
+                    "No Notes Created Yet \n Click on '+' for creating new note",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.lato(
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ));
             }
             return Container();
-            // : Center(
-            // child: Text(
-            // "No Notes Found. Tap '+' to add one!",
-            // style: GoogleFonts.lato(
-            // textStyle: const TextStyle(
-            // color: Colors.white70,
-            // fontSize: 18,
-            // ),
-            // ),
-            // ),
-            // );
           },
         ),
       ),
@@ -245,12 +226,12 @@ class _HomepageState extends State<HomePage> {
                 backgroundColor: Color(0xff252525),
                 builder: (_) {
                   return Container(
-                    height: MediaQuery.of(context).size.height * 0.75,
+                    height: MediaQuery.of(ctx).size.height * 0.75,
                     padding: EdgeInsets.only(
                       left: 16,
                       right: 16,
                       top: 16,
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                      bottom: MediaQuery.of(ctx).viewInsets.bottom,
                     ),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -308,7 +289,6 @@ class _HomepageState extends State<HomePage> {
                                   fontSize: 16,
                                 ),
                               ),
-                              //enabledBorder Means when we don't click on the input field
                               enabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.white,
@@ -318,7 +298,6 @@ class _HomepageState extends State<HomePage> {
                                   Radius.circular(15),
                                 ),
                               ),
-                              //focusedBorder Means when we click on the input field
                               focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.lightGreenAccent,
@@ -351,7 +330,6 @@ class _HomepageState extends State<HomePage> {
                                   fontSize: 16,
                                 ),
                               ),
-                              //enabledBorder Means when we don't click on the input field
                               enabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.white,
@@ -361,7 +339,6 @@ class _HomepageState extends State<HomePage> {
                                   Radius.circular(15),
                                 ),
                               ),
-                              //focusedBorder Means when we click on the input field
                               focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.lightGreenAccent,
@@ -409,18 +386,9 @@ class _HomepageState extends State<HomePage> {
                                         ),
                                       ),
                                     );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          "Note Added Successfully!",
-                                        ),
-                                      ),
-                                    );
                                     titleController.clear();
                                     descController.clear();
                                   }
-
-                                  // Close the bottom sheet after adding the note
                                   Navigator.pop(context);
                                 },
                                 child: Text(

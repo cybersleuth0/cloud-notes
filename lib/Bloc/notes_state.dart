@@ -10,7 +10,9 @@ class NoteLoadingState extends NoteState {}
 
 class NoteSuccessState extends NoteState {
   List<NoteModel> notes;
-  NoteSuccessState({required this.notes});
+  String? snackBarMsg;
+
+  NoteSuccessState({required this.notes, this.snackBarMsg});
 }
 
 class NoteFailureState extends NoteState {
