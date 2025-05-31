@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:notes_firebase_app/Bloc/notes_bloc.dart';
-import 'package:notes_firebase_app/Bloc/notes_event.dart';
+import 'package:notes_firebase_app/Bloc/Notes_Bloc/notes_bloc.dart';
+import 'package:notes_firebase_app/Bloc/Notes_Bloc/notes_event.dart';
 import 'package:notes_firebase_app/Constants/appConstants.dart';
 import 'package:notes_firebase_app/Model/Models.dart';
 
-import '../Bloc/notes_state.dart';
+import '../Bloc/Notes_Bloc/notes_state.dart';
 
 class HomePage extends StatefulWidget {
   @override

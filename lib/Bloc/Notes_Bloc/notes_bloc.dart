@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_firebase_app/Bloc/notes_state.dart';
+import 'package:notes_firebase_app/Bloc/Notes_Bloc/notes_state.dart';
 import 'package:notes_firebase_app/Model/Models.dart';
 
 import 'notes_event.dart';

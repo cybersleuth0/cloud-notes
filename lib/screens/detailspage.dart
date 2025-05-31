@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:notes_firebase_app/Bloc/notes_event.dart';
+import 'package:notes_firebase_app/Bloc/Notes_Bloc/notes_event.dart';
 import 'package:notes_firebase_app/Model/Models.dart';
 
-import '../Bloc/notes_bloc.dart';
+import '../Bloc/Notes_Bloc/notes_bloc.dart';
 
 class Detailspage extends StatefulWidget {
   @override
