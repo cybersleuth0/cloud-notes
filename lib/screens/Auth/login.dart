@@ -183,10 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          App_Routes.ROUTE_SIGNUP,
-                        );
+                        Navigator.pushNamed(context, App_Routes.ROUTE_SIGNUP);
                       },
                       child: const Text(
                         'Sign Up',

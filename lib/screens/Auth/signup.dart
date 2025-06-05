@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:notes_firebase_app/Constants/appConstants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_firebase_app/Bloc/Signup_Bloc/signup_bloc.dart';
+import 'package:notes_firebase_app/Bloc/Signup_Bloc/signup_state.dart';
+
+import '../../Bloc/Signup_Bloc/signup_event.dart';
+import '../../Constants/appConstants.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -14,8 +19,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final bool _isLoading = false;
+  bool _isLoading = false;
   bool isPasswordVisible = true;
+  bool isConfrmPasswordVisible = true;
 
   @override
   void dispose() {
@@ -52,7 +58,8 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 24.0, vertical: 32.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -101,7 +108,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: Colors.lightGreenAccent,
                         width: 1.5,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(15)),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -138,7 +146,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: Colors.lightGreenAccent,
                         width: 1.5,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(15)),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -169,7 +178,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: TextStyle(color: Colors.white70),
-                    prefixIcon: Icon(Icons.lock_outline, color: Colors.white70),
+                    prefixIcon: Icon(
+                        Icons.lock_outline, color: Colors.white70),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -180,7 +190,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: Colors.lightGreenAccent,
                         width: 1.5,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(15)),
                     ),
                     suffixIcon: InkWell(
                       onTap: () {
@@ -189,13 +200,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         }); // Updates the UI.
                       },
                       child: isPasswordVisible
-                          ? Icon(Icons.visibility, color: Colors.white70)
-                          : Icon(Icons.visibility_off, color: Colors.white70),
+                          ? Icon(
+                          Icons.visibility, color: Colors.white70)
+                          : Icon(
+                          Icons.visibility_off, color: Colors.white70),
                     ),
                   ),
 
                   obscureText: !isPasswordVisible,
-                  textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a password';
@@ -223,7 +236,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
                     labelStyle: TextStyle(color: Colors.white70),
-                    prefixIcon: Icon(Icons.lock_outline, color: Colors.white70),
+                    prefixIcon: Icon(
+                        Icons.lock_outline, color: Colors.white70),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -234,20 +248,23 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: Colors.lightGreenAccent,
                         width: 1.5,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(15)),
                     ),
                     suffixIcon: InkWell(
                       onTap: () {
                         setState(() {
-                          isPasswordVisible = !isPasswordVisible;
+                          isConfrmPasswordVisible = !isConfrmPasswordVisible;
                         }); // Updates the UI.
                       },
-                      child: isPasswordVisible
-                          ? Icon(Icons.visibility, color: Colors.white70)
-                          : Icon(Icons.visibility_off, color: Colors.white70),
+                      child: !isConfrmPasswordVisible
+                          ? Icon(
+                          Icons.visibility, color: Colors.white70)
+                          : Icon(
+                          Icons.visibility_off, color: Colors.white70),
                     ),
                   ),
-                  obscureText: true,
+                  obscureText: isConfrmPasswordVisible,
                   textInputAction: TextInputAction.done,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -260,37 +277,78 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
                 const SizedBox(height: 32),
-                _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 50,
-                            vertical: 15,
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                BlocListener<Signup_Bloc, Signup_State>(
+                  listener: (context, state) {
+                    if (state is Loading_State) {
+                      _isLoading = true;
+                      setState(() {});
+                    }
+                    if (state is Failure_State) {
+                      _isLoading = false;
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                          state.errorMSG,
+                          style: TextStyle(color: Colors.white),
                         ),
-                        child: const Text(
-                          'SIGN UP',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        backgroundColor: Colors.redAccent,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
+                        margin: EdgeInsets.all(10),
+                      ));
+                    }
+                    if (state is Success_State) {
+                      _isLoading = false;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("${state.snackMsg}",
+                              style: TextStyle(color: Colors.white),),
+                            backgroundColor: Colors.green,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            margin: EdgeInsets.all(10),));
+                      Navigator.pop(
+                          context);
+                    }
+                  },
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<Signup_Bloc>().add(SignupBTN_Event(
+                            mail: _emailController.text.trim(),
+                            passwd: _passwordController.text.trim()));
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 50,
+                        vertical: 15,
                       ),
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : Text(
+                      'SIGN UP',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
