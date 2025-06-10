@@ -199,7 +199,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           isPasswordVisible = !isPasswordVisible;
                         }); // Updates the UI.
                       },
-                      child: isPasswordVisible
+                      child: !isPasswordVisible
                           ? Icon(
                           Icons.visibility, color: Colors.white70)
                           : Icon(
@@ -320,7 +320,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       if (_formKey.currentState!.validate()) {
                         context.read<Signup_Bloc>().add(SignupBTN_Event(
                             mail: _emailController.text.trim(),
-                            passwd: _passwordController.text.trim()));
+                            passwd: _passwordController.text.trim(),
+                            name: _nameController.text.trim()
+                        ));
                       }
                     },
                     style: ElevatedButton.styleFrom(

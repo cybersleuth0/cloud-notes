@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_firebase_app/Bloc/Login_Bloc/login_bloc.dart';
+import 'package:notes_firebase_app/Bloc/Login_Bloc/login_event.dart';
+import 'package:notes_firebase_app/Bloc/Login_Bloc/login_state.dart';
 import 'package:notes_firebase_app/Constants/appConstants.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,7 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final bool _isLoading = false;
+  bool _isLoading = false;
+  bool isPasswordVisible = true;
 
   @override
   void dispose() {
@@ -42,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           centerTitle: true,
-          automaticallyImplyLeading: false, // Removes the back button
+          automaticallyImplyLeading: false,
         ),
       ),
       body: Center(
@@ -125,12 +130,35 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        isPasswordVisible = !isPasswordVisible;
+                        setState(() {});
+                      },
+                      child: !isPasswordVisible
+                          ? Icon(Icons.visibility, color: Colors.white70)
+                          : Icon(Icons.visibility_off, color: Colors.white70),
+                    ),
                   ),
 
-                  obscureText: true,
+                  obscureText: !isPasswordVisible,
                   textInputAction: TextInputAction.done,
                   validator: (value) {
-                    /* ... your validation ... */
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a password';
+                    }
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters long';
+                    }
+                    if (!RegExp(
+                      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+                    ).hasMatch(value)) {
+                      return """Password must include:
+                      - 1 Upper case
+                      - 1 lowercase
+                      - 1 Numeric Number
+                      - 1 Special Character""";
+                    }
                     return null;
                   },
                 ),
@@ -146,33 +174,91 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 50,
-                            vertical: 15,
+                BlocListener<LoginBloc, LoginState>(
+                  listener: (context, state) {
+                    if (state is LoadingState) {
+                      _isLoading = true;
+                      setState(() {});
+                    }
+                    if (state is FailureState) {
+                      _isLoading = false;
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            state.errorMSG,
+                            style: TextStyle(color: Colors.white),
                           ),
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(20),
                           ),
+                          margin: EdgeInsets.all(10),
                         ),
-                        child: const Text(
-                          'LOGIN',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                      );
+                    }
+                    if (state is SuccessState) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "${state.snackMsg}",
+                            style: TextStyle(color: Colors.white),
                           ),
+                          duration: Duration(seconds: 1),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          margin: EdgeInsets.all(10),
                         ),
+                      );
+                      Future.delayed(Duration(seconds: 2), () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          App_Routes.ROUTE_HOMEPAGE,
+                        );
+                      });
+                    }
+                  },
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<LoginBloc>().add(
+                          Login_BTN_Event(
+                            mail: _emailController.text.trim(),
+                            passwd: _passwordController.text.trim(),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 50,
+                        vertical: 15,
                       ),
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : const Text(
+                            'LOGIN',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

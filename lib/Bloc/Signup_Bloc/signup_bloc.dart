@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_firebase_app/Bloc/Signup_Bloc/signup_event.dart';
@@ -13,6 +14,15 @@ class Signup_Bloc extends Bloc<Signup_Event, Signup_State> {
               email: event.mail,
               password: event.passwd,
             );
+        FirebaseFirestore.instance.collection("users").doc(mUser.user!.uid).set(
+          {
+            "email": event.mail,
+            "name": event.name,
+            "createdAT": DateTime
+                .now()
+                .millisecondsSinceEpoch,
+          },
+        );
         if (mUser.user != null) {
           emit(Success_State(snackMsg: "Signup Successful!"));
         }
