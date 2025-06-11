@@ -22,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
@@ -42,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
     Timer(Duration(seconds: 3), () async {
       var prefs = await SharedPreferences.getInstance();
-      if (mounted && prefs.getBool('isLoggedIn') == true) {
+      if (mounted && (prefs.getString('UID') ?? "").isNotEmpty) {
         Navigator.pushReplacementNamed(context, App_Routes.ROUTE_HOMEPAGE);
       } else if (mounted) {
         Navigator.pushReplacementNamed(context, App_Routes.ROUTE_LOGINPAGE);

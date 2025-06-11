@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,13 +19,13 @@ class HomePage extends StatefulWidget {
 class _HomepageState extends State<HomePage> {
   final List<Map<String, dynamic>> _colorsAndbordercolor = [
     {
-      "backcolor": Color(0xffffab91),
+      "backcolor": 0xffffab91,
     },
-    {"backcolor": Color(0xffffcc80)},
-    {"backcolor": Color(0xffe7ed9b)},
-    {"backcolor": Color(0xffcf94da)},
-    {"backcolor": Color(0xff81deea)},
-    {"backcolor": Color(0xfff48fb1)},
+    {"backcolor": 0xffffcc80},
+    {"backcolor": 0xffe7ed9b},
+    {"backcolor": 0xffcf94da},
+    {"backcolor": 0xff81deea},
+    {"backcolor": 0xfff48fb1},
   ];
 
   TextEditingController titleController = TextEditingController();
@@ -134,10 +135,7 @@ class _HomepageState extends State<HomePage> {
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color:
-                            _colorsAndbordercolor[Random().nextInt(
-                              _colorsAndbordercolor.length,
-                            )]["backcolor"],
+                        color: Color(state.notes[index].bgColor!),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.2),
@@ -218,7 +216,7 @@ class _HomepageState extends State<HomePage> {
       floatingActionButton: StatefulBuilder(
         builder: (ctx, ss) {
           return FloatingActionButton(
-            backgroundColor: _colorsAndbordercolor[1]["backcolor"],
+            backgroundColor: Color(_colorsAndbordercolor[1]["backcolor"]),
             onPressed: () async {
               showModalBottomSheet(
                 context: ctx,
@@ -383,6 +381,9 @@ class _HomepageState extends State<HomePage> {
                                           createdAT: DateTime.now()
                                               .millisecondsSinceEpoch
                                               .toString(),
+                                            bgColor: _colorsAndbordercolor[Random()
+                                                .nextInt(_colorsAndbordercolor
+                                                .length)]["backcolor"]
                                         ),
                                       ),
                                     );

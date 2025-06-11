@@ -2,23 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_firebase_app/Bloc/Notes_Bloc/notes_state.dart';
 import 'package:notes_firebase_app/Model/Models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'notes_event.dart';
 
 class NoteBloc extends Bloc<NoteEvent, NoteState> {
-  /// This variable represents a reference to the "notes" collection in Firebase Firestore.
-  /// It is used to interact with the Firestore database for operations like adding and retrieving notes.
-  CollectionReference? notesCollection = FirebaseFirestore.instance.collection(
-      "notes");
+  // /// This variable represents a reference to the "notes" collection in Firebase Firestore.
+  // /// It is used to interact with the Firestore database for operations like adding and retrieving notes.
 
   NoteBloc() : super(NoteInitialState()) {
 
     // Handles the addition of a new note.
     on<AddNoteEvent>((event, emit) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userID = prefs.getString('UID') ?? "";
+      CollectionReference? notesCollection = FirebaseFirestore.instance
+          .collection("users").doc(userID).collection("notes");
+
       // Add the new note to Firestore.
-      var res = await notesCollection!.add(
-          event.noteModel.toMap()
-      );
+      var res = await notesCollection.add(event.noteModel.toMap());
       // Check if the note was added successfully.
       if (res.id.isNotEmpty) {
         // The following commented-out code is an alternative way to fetch all notes.
@@ -59,10 +61,13 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
 
     // Handles the deletion of a note.
     on<DeleteNoteEvent>((event, emit) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userID = prefs.getString('UID') ?? "";
+      CollectionReference? notesCollection = FirebaseFirestore.instance
+          .collection("users").doc(userID).collection("notes");
       print("delete event called ${event.deleteID}");
       try {
-        // Attempt to delete the note document from Firestore.
-        await notesCollection?.doc(event.deleteID).delete();
+        await notesCollection.doc(event.deleteID).delete();
         // The following commented-out code is an alternative way to fetch all notes after deletion.
         // QuerySnapshot mData = await notesCollection!.get();
         // List<NoteModel> allNotes = mData.docs.map((eachNote) {
@@ -84,8 +89,12 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     // Handle the UpdateNoteEvent to update an existing note
     on<UpdateNoteEvent>((event, emit) async {
       try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String userID = prefs.getString('UID') ?? "";
+        CollectionReference? notesCollection = FirebaseFirestore.instance
+            .collection("users").doc(userID).collection("notes");
         // Update the note document in Firestore with the new data
-        await notesCollection!.doc(event.noteModel.id).update(
+        await notesCollection.doc(event.noteModel.id).update(
             event.noteModel.toMap());
 
         // The following commented-out code is an alternative way to fetch all notes
@@ -121,8 +130,12 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   ///
   /// Returns a [Future] that completes with a [List] of [NoteModel].
   Future<List<NoteModel>> fetchNotes() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userID = prefs.getString('UID') ?? "";
+    CollectionReference? notesCollection = FirebaseFirestore.instance
+        .collection("users").doc(userID).collection("notes");
     // Get all documents from the "notes" collection.
-    QuerySnapshot mData = await notesCollection!.get();
+    QuerySnapshot mData = await notesCollection.get();
 
     // Map each document to a NoteModel.
     List<NoteModel> allNotes = mData.docs.map((eachnote) {

@@ -17,7 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (mUser.user != null) {
           emit(SuccessState(snackMsg: "Login Successful!"));
           var prefs = await SharedPreferences.getInstance();
-          prefs.setBool('isLoggedIn', true);
+          prefs.setString('UID', mUser.user!.uid);
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
