@@ -6,12 +6,15 @@
 ----------
 
 ## 📸 App Screenshots
-| Screen | Preview |
-|--------|---------|
-| **Splash Screen** | ![Splash](ScreenShots/splash-left.png) |
-| **Login Screen** | ![Login](ScreenShots/login-portrait.png) |
-| **Signup Screen** | ![Signup](ScreenShots/signup-portrait.png) |
-| **Create/Edit Note** | ![Edit Note](ScreenShots/newNote-portrait.png) |
+
+| **Splash Screen** | **Login Screen** |
+|-------------------|------------------|
+| <img src="ScreenShots/splash-left.png" width="300" height="500"/> | <img src="ScreenShots/login-portrait.png" width="300" height="500"/> |
+
+| **Signup Screen** | **Create Note** |
+|-------------------|------------------|
+| <img src="ScreenShots/signup-portrait.png" width="300" height="500"/> | <img src="ScreenShots/newNote-portrait.png" width="300" height="500"/> |
+
 
 ----------
 
