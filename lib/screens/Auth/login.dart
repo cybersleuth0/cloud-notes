@@ -205,7 +205,6 @@ class _LoginPageState extends State<LoginPage> {
                             "${state.snackMsg}",
                             style: TextStyle(color: Colors.white),
                           ),
-                          duration: Duration(seconds: 1),
                           backgroundColor: Colors.green,
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
@@ -214,12 +213,10 @@ class _LoginPageState extends State<LoginPage> {
                           margin: EdgeInsets.all(10),
                         ),
                       );
-                      Future.delayed(Duration(seconds: 2), () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          App_Routes.ROUTE_HOMEPAGE,
-                        );
-                      });
+                      Navigator.pushReplacementNamed(
+                        context,
+                        App_Routes.ROUTE_HOMEPAGE,
+                      );
                     }
                   },
                   child: ElevatedButton(
