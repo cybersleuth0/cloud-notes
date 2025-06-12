@@ -48,10 +48,10 @@ class _HomepageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("object");
     return Scaffold(
       backgroundColor: Color(0xff252525),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Row(
@@ -113,8 +113,8 @@ class _HomepageState extends State<HomePage> {
             }
             if (state is NoteSuccessState) {
               return state.notes.isNotEmpty ? GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                   childAspectRatio: 0.9,
