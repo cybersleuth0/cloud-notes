@@ -6,12 +6,15 @@
 ----------
 
 ## 📸 App Screenshots
-| Screen | Preview |
-|--------|---------|
-| **Login Screen** | ![Login](assets/screenshots/login.png) |
-| **Signup Screen** | ![Signup](assets/screenshots/signup.png) |
-| **Notes Dashboard** | ![Notes Home](assets/screenshots/notes_home.png) |
-| **Create/Edit Note** | ![Edit Note](assets/screenshots/edit_note.png) |
+
+| **Splash Screen** | **Login Screen** |
+|-------------------|------------------|
+| <img src="ScreenShots/splash-left.png" width="250" height="500"/> | <img src="ScreenShots/login-portrait.png" width="250" height="500"/>|
+
+| **Signup Screen** | **Create Note** |
+|-------------------|------------------|
+| <img src="ScreenShots/signup-portrait.png" width="250" height="500"/> | <img src="ScreenShots/newNote-portrait.png" width="250" height="500"/>|
+
 
 ----------
 
